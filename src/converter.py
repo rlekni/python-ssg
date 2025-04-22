@@ -15,7 +15,7 @@ def generate_page(from_path, template_path, dest_path):
     markdown = markdown_file.read()
     markdown_file.close()
 
-    print(markdown)
+    # print(markdown)
     template_file = open(template_path)
     template = template_file.read()
     template_file.close()
