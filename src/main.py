@@ -8,7 +8,7 @@ from copystatic import copy_files_recursive
 
 
 dir_path_static = "./static"
-dir_path_public = "./public"
+dir_path_public = "./docs"
 
 
 def main():
@@ -27,7 +27,7 @@ def main():
     if len(sys.argv) > 1:
         basepath = sys.argv[1]
     print(f"Using Basepath: {basepath}")
-    generate_pages_rec(basepath, "content", "template.html", "public")
+    generate_pages_rec(basepath, "content", "template.html", dir_path_public)
 
 
 main()
