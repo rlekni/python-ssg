@@ -1,5 +1,4 @@
 from enum import Enum
-from types import CodeType
 
 
 class TextType(Enum):

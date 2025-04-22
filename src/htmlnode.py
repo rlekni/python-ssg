@@ -1,4 +1,5 @@
 from functools import reduce
+from textnode import TextType, TextNode
 
 
 class HTMLNode:
@@ -30,3 +31,42 @@ class LeafNode(HTMLNode):
         if not self.tag:
             return self.value
         return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"
+
+
+class ParentNode(HTMLNode):
+    def __init__(self, tag, children, props=None):
+        super().__init__(tag, None, children, props)
+
+    def to_html(self):
+        if not self.tag:
+            raise ValueError("Tag missing from ParentNode")
+        if not self.children:
+            raise ValueError("Children missing from ParentNode")
+
+        results = []
+        for child in self.children:
+            child_html = child.to_html()
+            results.append(child_html)
+
+        child_value = "".join(results)
+        return f"<{self.tag}{self.props_to_html()}>{child_value}</{self.tag}>"
+
+
+def text_node_to_html_node(text_node):
+    match text_node.text_type:
+        case TextType.NORMAL:
+            return LeafNode(None, value=text_node.text)
+        case TextType.BOLD:
+            return LeafNode("b", text_node.text)
+        case TextType.ITALIC:
+            return LeafNode("i", text_node.text)
+        case TextType.CODE:
+            return LeafNode("code", text_node.text)
+        case TextType.LINK:
+            prop = {"href": text_node.url}
+            return LeafNode("a", text_node.text, prop)
+        case TextType.IMAGE:
+            props = {"src": text_node.url, "alt": text_node.text}
+            return LeafNode("img", "", props)
+        case _:
+            raise Exception("Invalid text type")
