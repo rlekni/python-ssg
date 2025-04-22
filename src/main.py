@@ -1,4 +1,5 @@
 from textnode import *
+from converter import generate_page
 import os
 import shutil
 
@@ -16,6 +17,8 @@ def main():
 
     print("Copying static files to public directory...")
     copy_files_recursive(dir_path_static, dir_path_public)
+
+    generate_page("content/index.md", "template.html", "public/index.html")
 
 
 main()
