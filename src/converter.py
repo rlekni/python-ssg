@@ -4,8 +4,8 @@ from blocks_markdown import markdown_to_html_node
 def extract_title(markdown):
     lines = markdown.split("\n")
     for line in lines:
-        if line.startswith("#"):
-            return line.replace("#", "").strip()
+        if line.startswith("# "):
+            return line[2:].strip()
     raise Exception("no title found")
 
 
