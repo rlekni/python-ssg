@@ -13,7 +13,7 @@ class HTMLNode:
         raise NotImplementedError()
 
     def props_to_html(self):
-        if not self.props:
+        if self.props is None:
             return ""
         return "".join([f' {key}="{value}"' for key, value in self.props.items()])
 
@@ -39,9 +39,9 @@ class ParentNode(HTMLNode):
         super().__init__(tag, None, children, props)
 
     def to_html(self):
-        if not self.tag:
+        if self.tag is None:
             raise ValueError("Tag missing from ParentNode")
-        if not self.children:
+        if self.children is None:
             raise ValueError("Children missing from ParentNode")
 
         results = []
@@ -54,20 +54,36 @@ class ParentNode(HTMLNode):
 
 
 def text_node_to_html_node(text_node):
-    match text_node.text_type:
-        case TextType.NORMAL:
-            return LeafNode(None, value=text_node.text)
-        case TextType.BOLD:
-            return LeafNode("b", text_node.text)
-        case TextType.ITALIC:
-            return LeafNode("i", text_node.text)
-        case TextType.CODE:
-            return LeafNode("code", text_node.text)
-        case TextType.LINK:
-            prop = {"href": text_node.url}
-            return LeafNode("a", text_node.text, prop)
-        case TextType.IMAGE:
-            props = {"src": text_node.url, "alt": text_node.text}
-            return LeafNode("img", "", props)
-        case _:
-            raise Exception("Invalid text type")
+    if text_node.text_type == TextType.NORMAL:
+        return LeafNode(None, text_node.text)
+    if text_node.text_type == TextType.BOLD:
+        return LeafNode("b", text_node.text)
+    if text_node.text_type == TextType.ITALIC:
+        return LeafNode("i", text_node.text)
+    if text_node.text_type == TextType.CODE:
+        return LeafNode("code", text_node.text)
+    if text_node.text_type == TextType.LINK:
+        return LeafNode("a", text_node.text, {"href": text_node.url})
+    if text_node.text_type == TextType.IMAGE:
+        return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+    raise ValueError(f"invalid text type: {text_node.text_type}")
+
+# not sure why this stopped working
+# def text_node_to_html_node(text_node):
+#     match text_node.text_type:
+#         case TextType.NORMAL:
+#             return LeafNode(None, value=text_node.text)
+#         case TextType.BOLD:
+#             return LeafNode("b", text_node.text)
+#         case TextType.ITALIC:
+#             return LeafNode("i", text_node.text)
+#         case TextType.CODE:
+#             return LeafNode("code", text_node.text)
+#         case TextType.LINK:
+#             prop = {"href": text_node.url}
+#             return LeafNode("a", text_node.text, prop)
+#         case TextType.IMAGE:
+#             props = {"src": text_node.url, "alt": text_node.text}
+#             return LeafNode("img", "", props)
+#         case _:
+#            raise Exception("Invalid text type")
